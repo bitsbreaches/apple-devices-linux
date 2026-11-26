@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Device Dock
+GenericName=iPhone & Backup Manager
+Comment=Manage iPhones, files and local backups
+Exec=@APPDIR@/run.sh
+Icon=io.github.bitsbreaches.DeviceDock
+Terminal=false
+Categories=Utility;
+Keywords=iPhone;iPad;iOS;backup;iTunes;Finder;
+StartupNotify=true

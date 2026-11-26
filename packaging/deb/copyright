@@ -1,0 +1,74 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: device-dock
+Upstream-Contact: https://github.com/bitsbreaches/device-dock/issues
+Source: https://github.com/bitsbreaches/device-dock
+Comment: Device Dock is free software under the GNU General Public License,
+ version 3 only (GPL-3.0-only). The complete licence text is installed as
+ /usr/share/doc/device-dock/LICENSE. Third-party components keep their own licences,
+ which are recorded below and in THIRD_PARTY_NOTICES.md.
+
+Files: *
+Copyright: 2026 Device Dock Contributors
+License: GPL-3.0-only
+ This program is free software: you can redistribute it and/or modify it under the terms
+ of the GNU General Public License as published by the Free Software Foundation, version 3
+ of the License.
+ .
+ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ See the GNU General Public License for more details.
+ .
+ The full text of the licence is installed as /usr/share/doc/device-dock/LICENSE and is
+ available at /usr/share/common-licenses/GPL-3 and https://www.gnu.org/licenses/gpl-3.0.html.
+
+Files: usr/lib/device-dock/app/*
+Copyright: 2026 Python Software Foundation
+           2026 GNOME Project
+           2026 The Python Cryptographic Authority and contributors
+           2026 Helder Eijs and pycryptodome contributors
+           2026 Lincoln Loop and python-qrcode contributors
+           2026 Secret Labs AB, Pillow contributors
+           2019-2026 James Sharkey
+License: PSF-2.0 or LGPL-2.1-or-later or Apache-2.0 or BSD-3-Clause or BSD-2-Clause or MIT or MIT-CMU
+ The self-contained application directory bundles a CPython runtime (PSF-2.0), PyGObject
+ (LGPL-2.1-or-later), cryptography (Apache-2.0 or BSD-3-Clause), pycryptodome (BSD-2-Clause
+ and public domain), qrcode (BSD-3-Clause) and Pillow (MIT-CMU/HPND). It also contains the
+ iphone_backup_decrypt decryption engine (MIT, (c) 2019-2026 James Sharkey), which is
+ compiled into the binary because the library is not packaged in Debian and encrypted
+ backups cannot be opened without it. The complete licence texts are installed in
+ /usr/share/doc/device-dock/bundled-licenses/ and reproduced in THIRD_PARTY_NOTICES.md.
+ The application's own compiled code is licensed under GPL-3.0-only.
+
+Files: usr/share/doc/device-dock/bundled-licenses/iphone_backup_decrypt.txt
+Copyright: 2019-2026 James Sharkey
+License: MIT
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ software and associated documentation files (the "Software"), to deal in the Software
+ without restriction, including without limitation the rights to use, copy, modify, merge,
+ publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+ persons to whom the Software is furnished to do so, subject to the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included in all copies or
+ substantial portions of the Software.
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ DEALINGS IN THE SOFTWARE.
+
+Files: usr/share/icons/hicolor/*/apps/io.github.bitsbreaches.DeviceDock.*
+Copyright: 2026 Device Dock Contributors
+License: GPL-3.0-only
+ Original artwork created for this application. Not derived from any Apple Inc. or
+ third-party product artwork; "Apple", "iPhone" and "iPad" are trademarks of Apple Inc.,
+ used only to describe the devices this application works with. The scalable SVG is the
+ source of the raster sizes installed alongside it.
+
+Files: usr/share/metainfo/io.github.bitsbreaches.DeviceDock.metainfo.xml
+Copyright: 2026 Device Dock Contributors
+License: GPL-3.0-only
+ AppStream metadata for this application, released under the same terms as the
+ application itself. The metadata text is additionally available under CC0-1.0 so that
+ distributions can mirror it.

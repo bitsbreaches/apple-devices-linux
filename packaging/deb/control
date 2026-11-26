@@ -1,0 +1,59 @@
+Package: device-dock
+Version: @VERSION@
+Architecture: amd64
+Maintainer: @MAINTAINER@
+Installed-Size: @INSTALLED_SIZE@
+Section: utils
+Priority: optional
+Homepage: https://github.com/bitsbreaches/device-dock
+Breaks: apple-devices (<< 1.2.0)
+Replaces: apple-devices (<< 1.2.0)
+Depends: gir1.2-gtk-4.0 (>= 4.10),
+         gir1.2-adw-1 (>= 1.4),
+         gir1.2-gdkpixbuf-2.0,
+         libgirepository-1.0-1,
+         libimobiledevice-utils,
+         usbmuxd,
+         ifuse,
+         fuse3,
+         gstreamer1.0-plugins-base,
+         gstreamer1.0-plugins-good,
+         gstreamer1.0-libav
+Recommends: gir1.2-secret-1,
+            poppler-utils,
+            ffmpeg,
+            heif-gdk-pixbuf,
+            gstreamer1.0-plugins-bad,
+            gstreamer1.0-plugins-ugly,
+            libusbmuxd-tools
+Description: manage iPhones, files and local backups
+ A native GTK 4 / libadwaita application for inspecting iOS devices and
+ iTunes/Finder backups on Linux.
+ .
+ It lists connected devices through usbmuxd, creates backups with live
+ progress and cancellation, unlocks encrypted backups, browses their
+ contents (photos, videos, music, documents, contacts, messages, call
+ history, notes and calendar), previews and exports files, writes files to
+ the device, restores a backup to its device, and resets a device to
+ factory settings after an explicit typed confirmation.
+ .
+ Backups are only read. A connected device is written to only after an
+ explicit user action.
+ .
+ The application is a self-contained build: it carries its own CPython
+ runtime and Python libraries under /usr/lib/device-dock/app and does not
+ use the system Python, so it keeps working when a distribution upgrades
+ its default Python version.
+ .
+ Dependencies: the Depends list contains the system libraries and tools
+ needed for every feature the application offers, including the GTK 4 and
+ libadwaita typelibs, live phone browsing (ifuse, fuse3, usbmuxd) and
+ audio/video playback (GStreamer). The Recommends list contains optional
+ extras that only improve previews and diagnostics; the application
+ reports the missing tool instead of failing when one is absent.
+ .
+ Device Dock is free software, licensed under the GNU
+ General Public License, version 3 only (GPL-3.0-only). The complete
+ source code and build instructions are published at
+ https://github.com/bitsbreaches/device-dock. Third-party
+ components keep their own licences, listed in THIRD_PARTY_NOTICES.md.

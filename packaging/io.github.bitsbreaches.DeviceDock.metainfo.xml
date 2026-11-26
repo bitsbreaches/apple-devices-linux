@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AppStream metadata for Device Dock.
+
+  SPDX-License-Identifier: CC0-1.0
+  Copyright (C) 2026 Device Dock Contributors
+-->
+<component type="desktop-application">
+  <id>io.github.bitsbreaches.DeviceDock</id>
+  <!-- The AppStream metadata text is CC0 so distributions can mirror it; the application
+       itself is licensed under GPL-3.0-only (see project_license). -->
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <name>Device Dock</name>
+  <summary>Manage iPhones, files and local backups</summary>
+  <developer id="io.github.bitsbreaches">
+    <name>Device Dock Contributors</name>
+  </developer>
+
+  <description>
+    <p>
+      A native GTK 4 / libadwaita application for managing iPhones, their files and
+      local iTunes/Finder backups on Linux.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Live device discovery and identity through usbmuxd and libimobiledevice</li>
+      <li>Backup creation with byte-accurate progress, cancel and resume</li>
+      <li>Encrypted-backup unlocking, manifest browsing, search and preview</li>
+      <li>Parsed views of contacts, messages, call history, notes and calendar</li>
+      <li>Photos, videos, music, podcast and document browsing with export</li>
+      <li>Restore a backup to its device, and restore a device to factory settings</li>
+      <li>HTML inventory reports and integrity verification</li>
+    </ul>
+    <p>
+      Backups are only read. A device is written to — file transfer, restore or factory
+      reset — only after an explicit confirmation.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">io.github.bitsbreaches.DeviceDock.desktop</launchable>
+
+  <url type="homepage">https://github.com/bitsbreaches/device-dock</url>
+  <url type="bugtracker">https://github.com/bitsbreaches/device-dock/issues</url>
+  <url type="vcs-browser">https://github.com/bitsbreaches/device-dock</url>
+
+  <provides>
+    <binary>device-dock</binary>
+    <mediatype>application/x-apple-ios-backup</mediatype>
+  </provides>
+
+  <categories>
+    <category>Utility</category>
+  </categories>
+
+  <keywords>
+    <keyword>iPhone</keyword>
+    <keyword>iPad</keyword>
+    <keyword>iOS</keyword>
+    <keyword>backup</keyword>
+    <keyword>iTunes</keyword>
+    <keyword>Finder</keyword>
+    <keyword>libimobiledevice</keyword>
+  </keywords>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="1.2.0" date="2026-11-27">
+      <description>
+        <p>Rename the application to Device Dock, with the package and command
+        <code>device-dock</code> and the application ID
+        <code>io.github.bitsbreaches.DeviceDock</code>.</p>
+        <p>Existing settings, logs, cached data and the backup library are moved from the
+        former directories automatically; no backup is copied or deleted. The package
+        replaces <code>apple-devices</code> and removes its old launcher.</p>
+      </description>
+    </release>
+    <release version="1.1.0" date="2026-11-27">
+      <description>
+        <p>First open-source release: Device Dock is now free software under
+        the GNU General Public License, version 3 only (GPL-3.0-only), with the complete
+        source code published.</p>
+        <p>The proprietary end-user licence agreement, its first-run acceptance dialog and
+        the proprietary ownership notices have been removed.</p>
+      </description>
+    </release>
+  </releases>
+</component>

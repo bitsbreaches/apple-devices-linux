@@ -1,0 +1,30 @@
+#!/bin/sh
+# Device Dock — launcher for the Debian package.
+#
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2026 Device Dock Contributors
+#
+# The application is a Nuitka standalone build: /usr/lib/device-dock/app contains the
+# compiled application together with its own CPython runtime and Python libraries, so the
+# host's Python version is never used. GTK 4, libadwaita and the device tools remain
+# distribution packages (see Depends).
+set -eu
+
+APPDIR=/usr/lib/device-dock
+RUNTIME="$APPDIR/app"
+# The licence documents that the application must display live beside the package: Ubuntu's
+# dpkg path-exclude removes /usr/share/doc/* (except copyright) on cloud and minimal images.
+DOCDIR=/usr/lib/device-dock/documents
+
+if [ ! -x "$RUNTIME/device-dock" ]; then
+    printf '%s\n' "device-dock: $RUNTIME/device-dock is missing; reinstall the package." >&2
+    exit 1
+fi
+
+DEVICE_DOCK_DOCDIR="$DOCDIR"
+export DEVICE_DOCK_DOCDIR
+# The MIT library is shipped as source, so keep its bytecode cache out of /usr/lib.
+PYTHONDONTWRITEBYTECODE=1
+export PYTHONDONTWRITEBYTECODE
+
+exec "$RUNTIME/device-dock" "$@"

@@ -1,0 +1,8 @@
+# Encrypted-backup keybag handling and AES decryption (established implementation).
+iphone_backup_decrypt>=0.11,<0.12
+# Symmetric decryption of individual backup payloads.
+cryptography>=41
+# QR codes for the Support Development dialog (required: the dialog shows both
+# donation destinations as scannable codes).
+qrcode>=7.4
+# GTK 4 bindings are provided by the distribution package python3-gi (PyGObject).

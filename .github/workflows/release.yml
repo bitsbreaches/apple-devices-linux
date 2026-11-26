@@ -1,0 +1,133 @@
+# Build and publish the Debian package for Device Dock.
+#
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2026 Device Dock Contributors
+#
+# Pushing a tag such as v1.0.1 builds dist/device-dock_<version>_amd64.deb, checks that the
+# tag matches the version in devicedock/__init__.py, and attaches the package (plus its
+# checksum and the licence documents) to a GitHub release. The workflow can also be run
+# manually to produce a build artifact without publishing a release.
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: Test suite
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python and GTK dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            python3 python3-pip python3-venv python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 \
+            gir1.2-secret-1 python3-cryptography python3-pycryptodome python3-qrcode \
+            libimobiledevice-utils
+      - name: Install Python packages
+        run: |
+          python3 -m venv --system-site-packages .venv
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -r requirements.txt pytest pyflakes
+      - name: Lint
+        run: .venv/bin/python -m pyflakes devicedock tests scripts
+      - name: Run tests
+        run: .venv/bin/python -m pytest tests -q
+
+  build-deb:
+    name: Build .deb
+    needs: test
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends dpkg-dev
+          docker info >/dev/null
+      - name: Check the tag matches the application version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version="$(sed -n 's/^__version__ = "\([^"]*\)"$/\1/p' devicedock/__init__.py)"
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$version" != "$tag" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match __version__ $version" >&2
+            exit 1
+          fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+      - name: Build the package
+        env:
+          SOURCE_DATE_EPOCH: "1700000000"
+        run: ./packaging/build-deb.sh
+      - name: Verify the package contents
+        run: |
+          set -eu
+          # apt only treats an argument as a package file when it is an absolute path or
+          # starts with "./"; a bare "dist/name.deb" is parsed as a release/package spec.
+          deb="$(realpath "$(ls dist/device-dock_*_amd64.deb | head -n 1)")"
+          dpkg-deb --info "$deb"
+          # The bundled runtime, the licence documents and the MIT decryption notice must be
+          # present. The decryption engine itself is compiled into the payload.
+          listing="$(dpkg-deb --contents "$deb")"
+          for required in \
+            ./usr/bin/device-dock \
+            ./usr/lib/device-dock/app/device-dock \
+            ./usr/lib/device-dock/documents/LICENSE \
+            ./usr/lib/device-dock/documents/RELEASE_NOTES.md \
+            ./usr/share/doc/device-dock/copyright \
+            ./usr/share/doc/device-dock/bundled-licenses/python3.12.txt \
+            ./usr/share/doc/device-dock/bundled-licenses/iphone_backup_decrypt.txt \
+            ./usr/share/applications/io.github.bitsbreaches.DeviceDock.desktop; do
+            printf '%s\n' "$listing" | grep -q -- "$required" || {
+              echo "missing from the package: $required" >&2
+              exit 1
+            }
+          done
+          # No host Python: the package must install and run on a system without python3.
+          if dpkg-deb --field "$deb" Depends | grep -q 'python3'; then
+            echo "the package must not depend on the host Python" >&2
+            exit 1
+          fi
+          sudo apt-get install -y "$deb"
+          device-dock --version
+          device-dock --licence | head -n 3
+          # The installed package must load its bundled decryption engine without any
+          # system Python package, or encrypted backups cannot be opened.
+          device-dock --self-check
+          device-dock --self-check | grep -q "Decryption engine: iphone_backup_decrypt"
+          ( cd dist && sha256sum "$(basename "$deb")" > "$(basename "$deb").sha256" )
+      - name: Build the source tarball
+        run: ./packaging/build-tarball.sh
+      - name: Upload the package as a build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: device-dock-deb
+          path: |
+            dist/device-dock_*_amd64.deb
+            dist/device-dock_*_amd64.deb.sha256
+            dist/device-dock-*-linux.tar.gz
+          if-no-files-found: error
+      - name: Publish the GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          deb="$(ls dist/device-dock_*_amd64.deb | head -n 1)"
+          tarball="$(ls dist/device-dock-*-linux.tar.gz | head -n 1)"
+          tag="$GITHUB_REF_NAME"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" "$deb" "$deb.sha256" "$tarball" --clobber
+          else
+            gh release create "$tag" "$deb" "$deb.sha256" "$tarball" \
+              --title "Device Dock $tag Public Beta" \
+              --notes-file RELEASE_NOTES.md \
+              --prerelease
+          fi

@@ -1,0 +1,64 @@
+#!/bin/sh
+# Device Dock — post-installation setup.
+#
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2026 Device Dock Contributors
+#
+# usbmuxd is a shared daemon supplied by the distribution (GPL-2.0-or-later), not part of
+# this package. This hook only asks the running service manager to make it available: it
+# never installs, reconfigures or removes the daemon, and it never restarts a daemon that is
+# already running, because that would interrupt attached devices.
+set -e
+
+start_usbmuxd() {
+    # /run/systemd/system only exists while systemd is the running service manager.
+    # Containers, WSL and sysvinit/OpenRC systems must not see errors from this hook.
+    if [ ! -d /run/systemd/system ] || ! command -v systemctl >/dev/null 2>&1; then
+        if command -v service >/dev/null 2>&1; then
+            service usbmuxd status >/dev/null 2>&1 \
+                || service usbmuxd start >/dev/null 2>&1 || true
+        fi
+        return 0
+    fi
+
+    # Administrator policy wins: a masked unit must stay masked.
+    state="$(systemctl is-enabled usbmuxd.service 2>/dev/null || true)"
+    case "$state" in
+        masked|masked-runtime)
+            echo "device-dock: usbmuxd.service is masked; leaving the administrator's policy in place." >&2
+            return 0
+            ;;
+    esac
+
+    # An already running daemon is serving device connections: never restart it.
+    if systemctl is-active --quiet usbmuxd.service 2>/dev/null; then
+        return 0
+    fi
+
+    # Static units are activated by udev and cannot be enabled, so "enable --now" is tried
+    # first (persistent activation) and a plain start is the fallback for those units.
+    if systemctl enable --now usbmuxd.service >/dev/null 2>&1; then
+        return 0
+    fi
+    if ! systemctl start usbmuxd.service >/dev/null 2>&1; then
+        echo "device-dock: usbmuxd is installed but could not be started; run 'sudo systemctl start usbmuxd' before connecting a device." >&2
+    fi
+    return 0
+}
+
+if [ "$1" = "configure" ]; then
+    start_usbmuxd
+    # Releases before the rename used this application ID. Remove a launcher left behind
+    # so the menu never shows the application twice. User data is not touched.
+    rm -f /usr/share/applications/io.github.appledevices.AppleDevices.desktop 2>/dev/null || true
+    rm -f /usr/share/icons/hicolor/scalable/apps/io.github.appledevices.AppleDevices.svg 2>/dev/null || true
+    rm -f /usr/share/metainfo/io.github.appledevices.AppleDevices.metainfo.xml 2>/dev/null || true
+    if command -v update-desktop-database >/dev/null 2>&1; then
+        update-desktop-database -q /usr/share/applications || true
+    fi
+    if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+        gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor || true
+    fi
+fi
+
+exit 0

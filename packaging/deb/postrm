@@ -1,0 +1,25 @@
+#!/bin/sh
+# Device Dock — cache refresh after removal or upgrade.
+#
+# SPDX-License-Identifier: GPL-3.0-only
+# Copyright (C) 2026 Device Dock Contributors
+#
+# User data is never touched by package management: settings live in
+# ~/.config/devicedock, logs in ~/.local/state/devicedock and the backup library in
+# ~/.local/share/devicedock/Backups. Removing the package leaves them in place; delete
+# them yourself if you want them gone.
+#
+# usbmuxd is a shared system service and is deliberately left alone: this hook never
+# disables, stops or removes it, so other devices and applications keep working.
+set -e
+
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+    if command -v update-desktop-database >/dev/null 2>&1; then
+        update-desktop-database -q /usr/share/applications || true
+    fi
+    if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+        gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor || true
+    fi
+fi
+
+exit 0

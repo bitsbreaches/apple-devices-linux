@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Device Dock — application icon.
+
+  SPDX-License-Identifier: GPL-3.0-only
+  Copyright (C) 2026 Device Dock Contributors
+
+  Original artwork for this application. It does not use or resemble Apple's icons,
+  logos or trademarks.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#62a0ea"/>
+      <stop offset="1" stop-color="#1c71d8"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="url(#tile)"/>
+
+  <!-- Dock cradle -->
+  <rect x="22" y="66" width="9" height="31" rx="4.5" fill="#ffffff" opacity="0.9"/>
+  <rect x="97" y="66" width="9" height="31" rx="4.5" fill="#ffffff" opacity="0.9"/>
+  <rect x="24" y="91" width="80" height="11" rx="5.5" fill="#ffffff"/>
+
+  <!-- Device seated in the cradle -->
+  <rect x="48" y="22" width="32" height="62" rx="8" fill="#ffffff" opacity="0.16"/>
+  <rect x="48" y="22" width="32" height="62" rx="8" fill="none" stroke="#ffffff" stroke-width="4.5"/>
+
+  <!-- Transfer indicator -->
+  <path d="M64 34v19" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+  <path d="M56 47l8 8 8-8" fill="none" stroke="#ffffff" stroke-width="5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Connector -->
+  <rect x="59" y="86" width="10" height="6" rx="3" fill="#ffffff"/>
+</svg>
